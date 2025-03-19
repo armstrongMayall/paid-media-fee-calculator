@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid Media Services Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff5023;
+            --dark: #2d2829;
+            --light: #f8f6f6;
+            --text: #534f50;
+            --white: #ffffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Archivo', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            padding-bottom: 50px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--dark) 0%, #403a3b 100%);
+            color: var(--white);
+            padding: 60px 0 80px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        
+        .header p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .calculator {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: -50px;
+            margin-bottom: 40px;
+        }
+        
+        .result-container {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff7549 100%);
+            color: var(--white);
+            padding: 25px 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(255, 80, 35, 0.2);
+        }
+        
+        .fee {
+            font-size: 36px;
+            font-weight: 800;
+        }
+        
+        .section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .section-cost {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .option-description {
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Archivo', sans-serif;
+        }
+        
+        input {
+            background-color: #f9f9f9;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 80, 35, 0.15);
+        }
+        
+        .summary-section {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .summary-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .summary-item {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .summary-item h4 {
+            color: var(--dark);
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .summary-total {
+            background: linear-gradient(135deg, var(--dark) 0%, #403a3b 100%);
+            color: var(--white);
+            padding: 25px 30px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .summary-total h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .summary-total p {
+            margin: 0;
+            font-weight: 800;
+            font-size: 32px;
+        }
+        
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        
+        .cost-table th {
+            background-color: var(--light);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .cost-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cost-table .cost-value {
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .cost-table .total-row {
+            background-color: #f8f8f8;
+            font-weight: 700;
+        }
+        
+        .cost-table .total-row .cost-value {
+            color: var(--dark);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 0 60px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            .calculator {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 15px;
+            }
+            
+            .fee {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Paid Media Services Calculator</h1>
+            <p>Build your custom digital marketing package and get an instant price estimate for your paid media services.</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="calculator">
+            <div class="result-container">
+                <h2>Total Monthly Fee (AUD)</h2>
+                <div class="fee" id="totalFee">$5,000.00</div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">Scope Options</h3>
+                    <div class="section-cost" id="scopeCost">$0.00</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="numChannels">Number of Channels</label>
+                    <p class="option-description">The number of advertising platforms that will be managed.</p>
+                    <select id="numChannels">
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="campaignsPerChannel">Campaigns per Channel</label>
+                    <p class="option-description">The number of separate campaigns that will be managed within each platform.</p>
+                    <select id="campaignsPerChannel">
+                        <option value="1-5">1-5</option>
+                        <option value="6-10">6-10</option>
+                        <option value="11-15">11-15</option>
+                        <option value="16-20">16-20</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="adsPerCampaign">Ads per Campaign</label>
+                    <p class="option-description">The number of unique ad variations managed within each campaign.</p>
+                    <select id="adsPerCampaign">
+                        <option value="1-10" selected>1-10</option>
+                        <option value="11-20">11-20</option>
+                        <option value="21-30">21-30</option>
+                        <option value="31-40">31-40</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="testsPerMonth">Tests per Month</label>
+                    <p class="option-description">The number of A/B tests or campaign experiments conducted each month.</p>
+                    <input type="number" id="testsPerMonth" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mediaPlans">Media Plans per Quarter</label>
+                    <p class="option-description">The number of comprehensive media planning documents created each quarter.</p>
+                    <input type="number" id="mediaPlans" min="1" value="1">
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">Service Options</h3>
+                    <div class="section-cost" id="serviceCost">$0.00</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frequencyActions">Frequency of Actions</label>
+                    <p class="option-description">How often campaign tasks are performed.</p>
+                    <select id="frequencyActions">
+                        <option value="Monthly">Monthly</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Daily">Daily</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="speedRequests">Speed of Requests</label>
+                    <p class="option-description">How quickly changes are implemented.</p>
+                    <select id="speedRequests">
+                        <option value="72h">Standard (72 hours)</option>
+                        <option value="24h">Premium (24 hours)</option>
+                        <option value="12h">Priority (12 hours)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="outOfHours">Out of Hours Support</label>
+                    <p class="option-description">Support outside standard business hours.</p>
+                    <select id="outOfHours">
+                        <option value="None">None</option>
+                        <option value="Evenings">Evenings and Weekends</option>
+                        <option value="Holidays">Holidays (Easter, Christmas, etc.)</option>
+                        <option value="Both">Both Evenings/Weekends & Holidays</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">Reporting Options</h3>
+                    <div class="section-cost" id="reportingCost">$0.00</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="numReports">Number of Reports</label>
+                    <p class="option-description">Different report types provided (performance, audience insights, etc).</p>
+                    <select id="numReports">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frequencyReports">Frequency of Reports</label>
+                    <p class="option-description">How often reports are delivered.</p>
+                    <select id="frequencyReports">
+                        <option value="Monthly" selected>Monthly</option>
+                        <option value="Weekly">Weekly</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="detailedAnalytics">Detailed Analytics</label>
+                    <p class="option-description">In-depth analysis and strategic recommendations.</p>
+                    <select id="detailedAnalytics">
+                        <option value="None">None</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Monthly">Monthly</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dashboards">Dashboards</label>
+                    <p class="option-description">Interactive Google Looker Studio dashboards.</p>
+                    <input type="number" id="dashboards" min="0" value="0">
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">Project Management</h3>
+                    <div class="section-cost" id="pmCost">$0.00</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="numWIPs">Number of WIPs per Month</label>
+                    <p class="option-description">Work-in-progress meetings each month.</p>
+                    <select id="numWIPs">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="qbrInclusions">QBR Inclusions</label>
+                    <p class="option-description">Quarterly business reviews.</p>
+                    <select id="qbrInclusions">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="strategySessions">Strategy Session Frequency</label>
+                    <p class="option-description">Frequency of strategic planning sessions.</p>
+                    <select id="strategySessions">
+                        <option value="Annual">Annual (1 per year)</option>
+                        <option value="Bi-annual">Bi-annual (2 per year)</option>
+                        <option value="Quarterly">Quarterly (4 per year)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="summary-section">
+                <div class="summary-header">
+                    <h2>Cost Summary</h2>
+                </div>
+                
+                <table class="cost-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="cost-value">Cost (AUD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base Package</td>
+                            <td class="cost-value">$5,000.00</td>
+                        </tr>
+                        <tr>
+                            <td>Scope Options</td>
+                            <td class="cost-value" id="scopeCostSummary">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Service Options</td>
+                            <td class="cost-value" id="serviceCostSummary">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Reporting Options</td>
+                            <td class="cost-value" id="reportingCostSummary">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Project Management</td>
+                            <td class="cost-value" id="pmCostSummary">$0.00</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total Monthly Fee</strong></td>
+                            <td class="cost-value" id="totalCostDetail">$5,000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="summary-total">
+                    <h3>Total Monthly Fee (AUD)</h3>
+                    <p id="totalFeeSummary">$5,000.00</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Digital Marketing Agency. Prices are in AUD and exclude GST.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Format currency function
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+        
+        // Main calculation function
+        function calculateFees() {
+            // Base fee
+            const baseFee = 5000;
+            
+            // Get form values
+            const numChannels = parseInt(document.getElementById('numChannels').value);
+            const campaignsPerChannel = document.getElementById('campaignsPerChannel').value;
+            const adsPerCampaign = document.getElementById('adsPerCampaign').value;
+            const testsPerMonth = parseInt(document.getElementById('testsPerMonth').value);
+            const mediaPlans = parseInt(document.getElementById('mediaPlans').value);
+            const frequencyActions = document.getElementById('frequencyActions').value;
+            const speedRequests = document.getElementById('speedRequests').value;
+            const outOfHours = document.getElementById('outOfHours').value;
+            const numReports = parseInt(document.getElementById('numReports').value);
+            const frequencyReports = document.getElementById('frequencyReports').value;
+            const detailedAnalytics = document.getElementById('detailedAnalytics').value;
+            const dashboards = parseInt(document.getElementById('dashboards').value);
+            const numWIPs = parseInt(document.getElementById('numWIPs').value);
+            const qbrInclusions = document.getElementById('qbrInclusions').value;
+            const strategySessions = document.getElementById('strategySessions').value;
+            
+            // Scope costs
+            let scopeCost = 0;
+            
+            // Channels cost (beyond 2 included in base)
+            if (numChannels > 2) {
+                scopeCost += (numChannels - 2) * 3075;
+            }
+            
+            // Campaigns per channel
+            if (campaignsPerChannel === "6-10") scopeCost += 500;
+            else if (campaignsPerChannel === "11-15") scopeCost += 1000;
+            else if (campaignsPerChannel === "16-20") scopeCost += 1500;
+            
+            // Ads per campaign
+            if (adsPerCampaign === "11-20") scopeCost += 200;
+            else if (adsPerCampaign === "21-30") scopeCost += 400;
+            else if (adsPerCampaign === "31-40") scopeCost += 600;
+            
+            // Tests per month
+            scopeCost += testsPerMonth * 500;
+            
+            // Media plans (beyond 1 included in base)
+            if (mediaPlans > 1) {
+                scopeCost += (mediaPlans - 1) * 1000 / 3;
+            }
+            
+            // Service costs
+            let serviceCost = 0;
+            
+            // Frequency of actions
+            if (frequencyActions === "Weekly") serviceCost += 500;
+            else if (frequencyActions === "Daily") serviceCost += 1000;
+            
+            // Speed of requests
+            if (speedRequests === "24h") serviceCost += 800;
+            else if (speedRequests === "12h") serviceCost += 1500;
+            
+            // Out of hours support
+            if (outOfHours === "Evenings") serviceCost += 1000;
+            else if (outOfHours === "Holidays") serviceCost += 1000 / 3;
+            else if (outOfHours === "Both") serviceCost += 1000 + (1000 / 3);
+            
+            // Reporting costs
+            let reportingCost = 0;
+            
+            // Number of reports (beyond 1 included in base)
+            if (numReports > 1) {
+                reportingCost += (numReports - 1) * 280;
+            }
+            
+            // Report frequency (weekly at $250 per week per report)
+            if (frequencyReports === "Weekly") {
+                reportingCost += numReports * 250 * 4 - 280; // Subtract the base monthly report cost
+            }
+            
+            // Detailed analytics
+            if (detailedAnalytics === "Monthly") reportingCost += 1100;
+            else if (detailedAnalytics === "Quarterly") reportingCost += 1100 / 3;
+            
+            // Dashboards
+            reportingCost += dashboards * 2200;
+            
+            // Project Management costs
+            let pmCost = 0;
+            
+            // WIPs (beyond 1 included in base)
+            if (numWIPs > 1) {
+                pmCost += (numWIPs - 1) * 300;
+            }
+            
+            // QBR inclusions
+            if (qbrInclusions === "Yes") pmCost += 600;
+            
+            // Strategy sessions (updated to $2,500 per session beyond 1 annual)
+            if (strategySessions === "Bi-annual") pmCost += 2500 / 12;
+            else if (strategySessions === "Quarterly") pmCost += (2500 * 3) / 12;
+            
+            // Calculate total
+            const totalCost = baseFee + scopeCost + serviceCost + reportingCost + pmCost;
+            
+            // Update UI
+            document.getElementById('scopeCost').textContent = formatCurrency(scopeCost);
+            document.getElementById('serviceCost').textContent = formatCurrency(serviceCost);
+            document.getElementById('reportingCost').textContent = formatCurrency(reportingCost);
+            document.getElementById('pmCost').textContent = formatCurrency(pmCost);
+            document.getElementById('totalFee').textContent = formatCurrency(totalCost);
+            
+            // Update summary
+            document.getElementById('scopeCostSummary').textContent = formatCurrency(scopeCost);
+            document.getElementById('serviceCostSummary').textContent = formatCurrency(serviceCost);
+            document.getElementById('reportingCostSummary').textContent = formatCurrency(reportingCost);
+            document.getElementById('pmCostSummary').textContent = formatCurrency(pmCost);
+            document.getElementById('totalFeeSummary').textContent = formatCurrency(totalCost);
+            document.getElementById('totalCostDetail').textContent = formatCurrency(totalCost);
+        }
+        
+        // Add event listeners to inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('select, input');
+            inputs.forEach(input => {
+                input.addEventListener('change', calculateFees);
+                if (input.tagName === 'INPUT') {
+                    input.addEventListener('input', calculateFees);
+                }
+            });
+            
+            // Calculate on page load
+            calculateFees();
+        });
+    </script>
+</body>
+</html>
