@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Advertising Service Fee Calculator</title>
+    <title>Paid Media Services Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -450,6 +450,16 @@
                         <option value="Quarterly">Quarterly (4 per year)</option>
                     </select>
                 </div>
+                
+                <div class="form-group">
+                    <label for="contractPeriod">Contract Period</label>
+                    <p class="option-description">All contracts require a minimum of 12 months commitment. Discounts are applied for longer contract periods.</p>
+                    <select id="contractPeriod">
+                        <option value="12">12 months</option>
+                        <option value="24">24 months (8% discount applied)</option>
+                        <option value="36">36 months (12% discount applied)</option>
+                    </select>
+                </div>
             </div>
             
             <div class="summary-section">
@@ -485,6 +495,14 @@
                             <td>Project Management</td>
                             <td class="cost-value" id="pmCostSummary">$0.00</td>
                         </tr>
+                        <tr>
+                            <td>Subtotal</td>
+                            <td class="cost-value" id="subtotalCost">$5,000.00</td>
+                        </tr>
+                        <tr id="discountRow" style="color: #ff5023; display: none;">
+                            <td>Contract Discount</td>
+                            <td class="cost-value" id="discountAmount">$0.00</td>
+                        </tr>
                         <tr class="total-row">
                             <td><strong>Total Monthly Fee</strong></td>
                             <td class="cost-value" id="totalCostDetail">$5,000.00</td>
@@ -500,7 +518,7 @@
         </div>
         
         <div class="footer">
-            <p>© 2025 IMWT Pty Ltd. Prices are in AUD and exclude GST and media fees.</p>
+            <p>© 2025 Digital Marketing Agency. Prices are in AUD and exclude GST.</p>
         </div>
     </div>
     
@@ -512,134 +530,170 @@
         
         // Main calculation function
         function calculateFees() {
-            // Base fee
-            const baseFee = 5000;
-            
-            // Get form values
-            const numChannels = parseInt(document.getElementById('numChannels').value);
-            const campaignsPerChannel = document.getElementById('campaignsPerChannel').value;
-            const adsPerCampaign = document.getElementById('adsPerCampaign').value;
-            const testsPerMonth = parseInt(document.getElementById('testsPerMonth').value);
-            const mediaPlans = parseInt(document.getElementById('mediaPlans').value);
-            const frequencyActions = document.getElementById('frequencyActions').value;
-            const speedRequests = document.getElementById('speedRequests').value;
-            const outOfHours = document.getElementById('outOfHours').value;
-            const numReports = parseInt(document.getElementById('numReports').value);
-            const frequencyReports = document.getElementById('frequencyReports').value;
-            const detailedAnalytics = document.getElementById('detailedAnalytics').value;
-            const dashboards = parseInt(document.getElementById('dashboards').value);
-            const numWIPs = parseInt(document.getElementById('numWIPs').value);
-            const qbrInclusions = document.getElementById('qbrInclusions').value;
-            const strategySessions = document.getElementById('strategySessions').value;
-            
-            // Scope costs
-            let scopeCost = 0;
-            
-            // Channels cost (beyond 2 included in base)
-            if (numChannels > 2) {
-                scopeCost += (numChannels - 2) * 3075;
+            try {
+                // Base fee
+                const baseFee = 5000;
+                
+                // Get form values - using safer methods with defaults in case elements aren't found
+                const numChannels = parseInt(document.getElementById('numChannels')?.value || 2);
+                const campaignsPerChannel = document.getElementById('campaignsPerChannel')?.value || "1-5";
+                const adsPerCampaign = document.getElementById('adsPerCampaign')?.value || "1-10";
+                const testsPerMonth = parseInt(document.getElementById('testsPerMonth')?.value || 0);
+                const mediaPlans = parseInt(document.getElementById('mediaPlans')?.value || 1);
+                const frequencyActions = document.getElementById('frequencyActions')?.value || "Monthly";
+                const speedRequests = document.getElementById('speedRequests')?.value || "72h";
+                const outOfHours = document.getElementById('outOfHours')?.value || "None";
+                const numReports = parseInt(document.getElementById('numReports')?.value || 1);
+                const frequencyReports = document.getElementById('frequencyReports')?.value || "Monthly";
+                const detailedAnalytics = document.getElementById('detailedAnalytics')?.value || "None";
+                const dashboards = parseInt(document.getElementById('dashboards')?.value || 0);
+                const numWIPs = parseInt(document.getElementById('numWIPs')?.value || 1);
+                const qbrInclusions = document.getElementById('qbrInclusions')?.value || "No";
+                const strategySessions = document.getElementById('strategySessions')?.value || "Annual";
+                const contractPeriod = parseInt(document.getElementById('contractPeriod')?.value || 12);
+                
+                // Scope costs
+                let scopeCost = 0;
+                
+                // Channels cost (beyond 2 included in base)
+                if (numChannels > 2) {
+                    scopeCost += (numChannels - 2) * 3075;
+                }
+                
+                // Campaigns per channel
+                if (campaignsPerChannel === "6-10") scopeCost += 500;
+                else if (campaignsPerChannel === "11-15") scopeCost += 1000;
+                else if (campaignsPerChannel === "16-20") scopeCost += 1500;
+                
+                // Ads per campaign
+                if (adsPerCampaign === "11-20") scopeCost += 200;
+                else if (adsPerCampaign === "21-30") scopeCost += 400;
+                else if (adsPerCampaign === "31-40") scopeCost += 600;
+                
+                // Tests per month
+                scopeCost += testsPerMonth * 500;
+                
+                // Media plans (beyond 1 included in base)
+                if (mediaPlans > 1) {
+                    scopeCost += (mediaPlans - 1) * 1000 / 3;
+                }
+                
+                // Service costs
+                let serviceCost = 0;
+                
+                // Frequency of actions
+                if (frequencyActions === "Weekly") serviceCost += 500;
+                else if (frequencyActions === "Daily") serviceCost += 1000;
+                
+                // Speed of requests
+                if (speedRequests === "24h") serviceCost += 800;
+                else if (speedRequests === "12h") serviceCost += 1500;
+                
+                // Out of hours support
+                if (outOfHours === "Evenings") serviceCost += 1000;
+                else if (outOfHours === "Holidays") serviceCost += 1000 / 3;
+                else if (outOfHours === "Both") serviceCost += 1000 + (1000 / 3);
+                
+                // Reporting costs
+                let reportingCost = 0;
+                
+                // Number of reports (beyond 1 included in base)
+                if (numReports > 1) {
+                    reportingCost += (numReports - 1) * 280;
+                }
+                
+                // Report frequency (weekly at $250 per week per report)
+                if (frequencyReports === "Weekly") {
+                    reportingCost += numReports * 250 * 4 - 280; // Subtract the base monthly report cost
+                }
+                
+                // Detailed analytics
+                if (detailedAnalytics === "Monthly") reportingCost += 1100;
+                else if (detailedAnalytics === "Quarterly") reportingCost += 1100 / 3;
+                
+                // Dashboards
+                reportingCost += dashboards * 2200;
+                
+                // Project Management costs
+                let pmCost = 0;
+                
+                // WIPs (beyond 1 included in base)
+                if (numWIPs > 1) {
+                    pmCost += (numWIPs - 1) * 300;
+                }
+                
+                // QBR inclusions
+                if (qbrInclusions === "Yes") pmCost += 600;
+                
+                // Strategy sessions (updated to $2,500 per session beyond 1 annual)
+                if (strategySessions === "Bi-annual") pmCost += 2500 / 12;
+                else if (strategySessions === "Quarterly") pmCost += (2500 * 3) / 12;
+                
+                // Calculate subtotal
+                const subtotal = baseFee + scopeCost + serviceCost + reportingCost + pmCost;
+                
+                // Calculate discount based on contract period
+                let discountAmount = 0;
+                let discountPercentage = 0;
+                
+                if (contractPeriod === 24) {
+                    discountPercentage = 0.08; // 8% discount
+                    discountAmount = subtotal * discountPercentage;
+                } else if (contractPeriod === 36) {
+                    discountPercentage = 0.12; // 12% discount
+                    discountAmount = subtotal * discountPercentage;
+                }
+                
+                // Calculate final total after discount
+                const totalCost = subtotal - discountAmount;
+                
+                // Update UI - safely
+                if (document.getElementById('scopeCost')) document.getElementById('scopeCost').textContent = formatCurrency(scopeCost);
+                if (document.getElementById('serviceCost')) document.getElementById('serviceCost').textContent = formatCurrency(serviceCost);
+                if (document.getElementById('reportingCost')) document.getElementById('reportingCost').textContent = formatCurrency(reportingCost);
+                if (document.getElementById('pmCost')) document.getElementById('pmCost').textContent = formatCurrency(pmCost);
+                if (document.getElementById('totalFee')) document.getElementById('totalFee').textContent = formatCurrency(totalCost);
+                
+                // Update summary
+                if (document.getElementById('scopeCostSummary')) document.getElementById('scopeCostSummary').textContent = formatCurrency(scopeCost);
+                if (document.getElementById('serviceCostSummary')) document.getElementById('serviceCostSummary').textContent = formatCurrency(serviceCost);
+                if (document.getElementById('reportingCostSummary')) document.getElementById('reportingCostSummary').textContent = formatCurrency(reportingCost);
+                if (document.getElementById('pmCostSummary')) document.getElementById('pmCostSummary').textContent = formatCurrency(pmCost);
+                if (document.getElementById('subtotalCost')) document.getElementById('subtotalCost').textContent = formatCurrency(subtotal);
+                if (document.getElementById('discountAmount')) document.getElementById('discountAmount').textContent = formatCurrency(discountAmount);
+                if (document.getElementById('totalFeeSummary')) document.getElementById('totalFeeSummary').textContent = formatCurrency(totalCost);
+                if (document.getElementById('totalCostDetail')) document.getElementById('totalCostDetail').textContent = formatCurrency(totalCost);
+                
+                // Show/hide discount row based on whether there's a discount
+                const discountRow = document.getElementById('discountRow');
+                if (discountRow) {
+                    if (discountAmount > 0) {
+                        discountRow.style.display = '';
+                    } else {
+                        discountRow.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error("Error in calculation:", error);
             }
-            
-            // Campaigns per channel
-            if (campaignsPerChannel === "6-10") scopeCost += 500;
-            else if (campaignsPerChannel === "11-15") scopeCost += 1000;
-            else if (campaignsPerChannel === "16-20") scopeCost += 1500;
-            
-            // Ads per campaign
-            if (adsPerCampaign === "11-20") scopeCost += 200;
-            else if (adsPerCampaign === "21-30") scopeCost += 400;
-            else if (adsPerCampaign === "31-40") scopeCost += 600;
-            
-            // Tests per month
-            scopeCost += testsPerMonth * 500;
-            
-            // Media plans (beyond 1 included in base)
-            if (mediaPlans > 1) {
-                scopeCost += (mediaPlans - 1) * 1000 / 3;
-            }
-            
-            // Service costs
-            let serviceCost = 0;
-            
-            // Frequency of actions
-            if (frequencyActions === "Weekly") serviceCost += 500;
-            else if (frequencyActions === "Daily") serviceCost += 1000;
-            
-            // Speed of requests
-            if (speedRequests === "24h") serviceCost += 800;
-            else if (speedRequests === "12h") serviceCost += 1500;
-            
-            // Out of hours support
-            if (outOfHours === "Evenings") serviceCost += 1000;
-            else if (outOfHours === "Holidays") serviceCost += 1000 / 3;
-            else if (outOfHours === "Both") serviceCost += 1000 + (1000 / 3);
-            
-            // Reporting costs
-            let reportingCost = 0;
-            
-            // Number of reports (beyond 1 included in base)
-            if (numReports > 1) {
-                reportingCost += (numReports - 1) * 280;
-            }
-            
-            // Report frequency (weekly at $250 per week per report)
-            if (frequencyReports === "Weekly") {
-                reportingCost += numReports * 250 * 4 - 280; // Subtract the base monthly report cost
-            }
-            
-            // Detailed analytics
-            if (detailedAnalytics === "Monthly") reportingCost += 1100;
-            else if (detailedAnalytics === "Quarterly") reportingCost += 1100 / 3;
-            
-            // Dashboards
-            reportingCost += dashboards * 2200;
-            
-            // Project Management costs
-            let pmCost = 0;
-            
-            // WIPs (beyond 1 included in base)
-            if (numWIPs > 1) {
-                pmCost += (numWIPs - 1) * 300;
-            }
-            
-            // QBR inclusions
-            if (qbrInclusions === "Yes") pmCost += 600;
-            
-            // Strategy sessions (updated to $2,500 per session beyond 1 annual)
-            if (strategySessions === "Bi-annual") pmCost += 2500 / 12;
-            else if (strategySessions === "Quarterly") pmCost += (2500 * 3) / 12;
-            
-            // Calculate total
-            const totalCost = baseFee + scopeCost + serviceCost + reportingCost + pmCost;
-            
-            // Update UI
-            document.getElementById('scopeCost').textContent = formatCurrency(scopeCost);
-            document.getElementById('serviceCost').textContent = formatCurrency(serviceCost);
-            document.getElementById('reportingCost').textContent = formatCurrency(reportingCost);
-            document.getElementById('pmCost').textContent = formatCurrency(pmCost);
-            document.getElementById('totalFee').textContent = formatCurrency(totalCost);
-            
-            // Update summary
-            document.getElementById('scopeCostSummary').textContent = formatCurrency(scopeCost);
-            document.getElementById('serviceCostSummary').textContent = formatCurrency(serviceCost);
-            document.getElementById('reportingCostSummary').textContent = formatCurrency(reportingCost);
-            document.getElementById('pmCostSummary').textContent = formatCurrency(pmCost);
-            document.getElementById('totalFeeSummary').textContent = formatCurrency(totalCost);
-            document.getElementById('totalCostDetail').textContent = formatCurrency(totalCost);
         }
         
         // Add event listeners to inputs
         document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('select, input');
-            inputs.forEach(input => {
-                input.addEventListener('change', calculateFees);
-                if (input.tagName === 'INPUT') {
-                    input.addEventListener('input', calculateFees);
-                }
-            });
-            
-            // Calculate on page load
-            calculateFees();
+            try {
+                const inputs = document.querySelectorAll('select, input');
+                inputs.forEach(input => {
+                    input.addEventListener('change', calculateFees);
+                    if (input.tagName === 'INPUT') {
+                        input.addEventListener('input', calculateFees);
+                    }
+                });
+                
+                // Calculate on page load
+                calculateFees();
+            } catch (error) {
+                console.error("Error setting up event listeners:", error);
+            }
         });
     </script>
 </body>
